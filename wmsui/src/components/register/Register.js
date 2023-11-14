@@ -56,7 +56,7 @@ const Register = () => {
         <Modal.Header closeButton>
         </Modal.Header>
         <Modal.Body>
-          <h4>Congratulations your account was created successfully</h4>
+          <h4>Congratulations account was created successfully</h4>
           <p>
             Click login to enter login page
           </p>
