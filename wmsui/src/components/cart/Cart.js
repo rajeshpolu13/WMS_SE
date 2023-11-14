@@ -34,7 +34,7 @@ const Cart = () => {
     }
     const getAllCustomers = async () => {
         try {
-            if(userName===null || userName===""){
+            if(userName==null || userName==""){
                 if(localStorage.getItem('user')){
                     userName=JSON.parse(localStorage.getItem("user")).username;
                 }}
@@ -85,11 +85,11 @@ const Cart = () => {
     }, []);
     const handleCheckoutInfo = (cartItems) => {
 
-        let sumofTotal = 0;
-        let sumofTotalWithoutOffer=0;
+        let sumofTotal = 0.00;
+        let sumofTotalWithoutOffer=0.00;
         for (let cartItem of cartItems) {
-                sumofTotal += parseInt(cartItem.totalPrice);
-                sumofTotalWithoutOffer+=parseInt(cartItem.totalPrice)
+                sumofTotal += Number(cartItem.totalPrice);
+                sumofTotalWithoutOffer+=Number(cartItem.totalPrice)
         }
         setTotalItemsCount(cartItems.length);
 
@@ -233,11 +233,11 @@ const Cart = () => {
                                         </div>
                                         <div className="col-lg-1 d-flex align-items-center">
 
-                                            <span><h6>Price</h6> $ {el.itemCartPrice}</span>
+                                            <span><h6>Price</h6> $&nbsp;{Number(el.itemCartPrice).toFixed(2).toString()}</span>
                                         </div>
                                         <div className="col-lg-2 d-flex align-items-center">
 
-                                            <span><h6>Total</h6> $ {el.totalPrice}</span>
+                                            <span><h6>Total</h6> <b>$&nbsp;{Number(el.totalPrice).toFixed(2).toString()}</b></span>
                                         </div>
                                         <div className="col-lg-1 d-flex align-items-center">
 
@@ -255,16 +255,13 @@ const Cart = () => {
                                 <div className='col-md-6 '>
                                     <h3 className=''>ITEMS {"("}{totalItemscount}{")"}</h3>
                                 </div>
-                                <div className='col-md-6'>
-                                    <h3> $ {finalBill} </h3>
-                                </div>
 
                             </div>
 
                             <hr className='mt-5'></hr>
                             <div className='row'>
                                 <div className='col'>
-                                    <h3>  Total Price : $ {finalBill} </h3>
+                                    <h3>  Total Price : $&nbsp;{Number(finalBill).toFixed(2).toString()} </h3>
                                 </div>
                             </div>
 

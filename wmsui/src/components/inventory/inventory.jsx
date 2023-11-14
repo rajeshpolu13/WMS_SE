@@ -117,7 +117,7 @@ const Inventory = () => {
 
     const getThatPage = (number) => {
       //  console.log(parseInt(number.target.innerText));
-        let pageNo = parseInt(number.target.innerText);
+        let pageNo = (number.target.innerText);
         setActivePage(pageNo);
     }
     let items = [];
@@ -385,7 +385,7 @@ const Inventory = () => {
                         navigate("/addItem");
                       }}
                     >
-                      Add Inventory
+                      Add Product
                     </Button>
                   ) : null}
                 </Col>
@@ -444,7 +444,7 @@ const Inventory = () => {
                             <td>{data.itemCategory}</td>
                             <td>{data.measurement}</td>
                             <td>{data.quantity}</td>
-                            <td>{(data.price).toString()}</td>
+                            <td>$&nbsp;{Number(data.price).toFixed(2).toString()}</td>
                             {userRole === "manager" ? (
                               <td>
                                 <button
@@ -457,7 +457,7 @@ const Inventory = () => {
                                     setMeasurement(data.measurement);
                                     setQuantity(data.quantity);
                                     setItemImage(data.itemImage);
-                                    setPrice(parseInt(data.price));
+                                    setPrice(Number(data.price));
                                     handleShowUpdate();
                                   }}
                                 >

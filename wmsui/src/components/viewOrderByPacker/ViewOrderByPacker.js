@@ -81,7 +81,7 @@ const ViewOrderByPacker = () => {
     }
     const getAllCustomers = async () => {
         try {
-            if(userName===null || userName===""){
+            if(userName==null || userName==""){
                 if(localStorage.getItem('user')){
                      userName=JSON.parse(localStorage.getItem("user")).username;
                 }}
@@ -153,7 +153,7 @@ const ViewOrderByPacker = () => {
                       <Container>
                         <div ref={componentPDF} style={{width: '80%', margin: '40px'}}>
                            <p><b>Order ID:</b>&nbsp;&nbsp;{selectedTransaction.transactionId}</p>
-                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', })}</p>
+                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',  hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true})}</p>
                            <p><b>Customer:</b>&nbsp;&nbsp;{(allCustomers? (allCustomers.find((item) => item.id === selectedTransaction.userId) || {}).customername: '')}</p>
                            <p><b>STATUS:</b>&nbsp;&nbsp;{(selectedTransaction.transactionStatus==="ordered"?'NEW':selectedTransaction.transactionStatus)}</p>
                            <p><b># of Items:</b>&nbsp;{(selectedTransaction.transactionItems).length}</p>
@@ -163,6 +163,7 @@ const ViewOrderByPacker = () => {
                                 <Table>
                                 <thead>
                                     <tr>
+                                    <th>Product Id</th>
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Quantity</th>
@@ -174,6 +175,7 @@ const ViewOrderByPacker = () => {
                                     selectedTransaction.transactionItems.map((data, index) => {
                                         return (
                                         <tr key={index}>
+                                           <td>{(products? (products.find((item) => item.itemId === data.itemId) || {}).itemProductId: '')}</td>
                                            <td>{data.itemName}</td>
                                            <td>{data.itemCategory}</td>
                                            <td>{data.itemQuantity}</td>
@@ -212,7 +214,7 @@ const ViewOrderByPacker = () => {
                       <Container>
                         <div>
                            <p><b>Order ID:</b>&nbsp;&nbsp;{selectedTransaction.transactionId}</p>
-                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', })}</p>
+                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',  hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true})}</p>
                            <p><b>Customer:</b>&nbsp;&nbsp;{(allCustomers? (allCustomers.find((item) => item.id === selectedTransaction.userId) || {}).customername: '')}</p>
                            <p><b>STATUS:</b>&nbsp;&nbsp;{(selectedTransaction.transactionStatus==="ordered"?'NEW':selectedTransaction.transactionStatus)}</p>
                            <p><b># of Items:</b>&nbsp;{(selectedTransaction.transactionItems).length}</p>

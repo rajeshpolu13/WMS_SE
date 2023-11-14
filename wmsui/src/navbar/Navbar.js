@@ -29,7 +29,7 @@ const Navigationbar = () => {
   const dispatch = useDispatch();
   
   useEffect(() => {
-    if(userRole===null || userRole===""){
+    if(userRole==null || userRole==""){
       if(localStorage.getItem('user')){
         userRole=JSON.parse(localStorage.getItem("user")).role;
       }}
@@ -58,7 +58,7 @@ const Navigationbar = () => {
 
   return (
     <>
-      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar collapseOnSelect expand="lg" bg="info" style={{fontWeight: 'bold'}}>
         <Container fluid>
           <Navbar.Brand onClick={(e) => navigate("/")}>
             WareHouse Management System
@@ -103,6 +103,13 @@ const Navigationbar = () => {
                     View Customers{" "}
                   </NavDropdown.Item>
                 </NavDropdown>
+              ) : null}
+              {loginStatus &&
+              (userRole === "manager") ? (
+                <Nav.Link as={Link} to="/home">
+                  {" "}
+                  Make route{" "}
+                </Nav.Link>
               ) : null}
               {loginStatus &&
               (userRole === "sales person") ? (
@@ -171,7 +178,8 @@ const Navigationbar = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         {userRole === "manager" ? (
-          <Route path="/additem" element={<AddItem />} />
+          <><Route path="/additem" element={<AddItem />} />
+          <Route path="/makeroute" element={<Home />} /></>
         ) : null}
         {userRole === "packer" ? (
           <><Route path="/vieworderbypacker" element={<ViewOrderByPacker />} />
@@ -180,7 +188,8 @@ const Navigationbar = () => {
         {userRole === "sales person" ? (
           <><Route path="/order" element={<Order />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/vieworder" element={<ViewOrder />} /></>
+          <Route path="/vieworder" element={<ViewOrder />} />
+          </>
         ) : null}
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/pnav/*" element={<Pnavbar />} />

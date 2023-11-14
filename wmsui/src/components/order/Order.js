@@ -27,7 +27,7 @@ const Order = () => {
     const navigate = useNavigate();
     const getAllCustomers = async () => {
         try {
-            if(userName===null || userName===""){
+            if(userName==null || userName==""){
                 if(localStorage.getItem('user')){
                      userName=JSON.parse(localStorage.getItem("user")).username;
                 }}
@@ -39,20 +39,23 @@ const Order = () => {
             });
             setAllCustomers(resp.data);
             setError(false);
+            setCartSuccess(true);
         }
         catch (err) {
             setError(true);
+            setCartSuccess(true);
         }
     }
     const getCartItems = async (value) => {
       try {
           let cartItems = await axios.get(`${process.env.REACT_APP_API_URL}/cart/myitems/${value}`);
-          console.log(cartItems,"CARTTTT");
+         
           if (cartItems.data && cartItems.data.length > 0) {
 
               setCartLength((cartItems.data).length);
 
           }
+          setCartSuccess(true);
       }
       catch (e) {
           console.log(e, "error res");
@@ -97,11 +100,13 @@ const Order = () => {
                     setMenuData(results.data);
                     setError(false);
                     setIsLoading(false);
+                    setCartSuccess(true);
                 }
                 )
                 .catch(e => {
                     setError(true);
                     setIsLoading(false);
+                    setCartSuccess(true);
                     // setSearchItem("");
                 })
     
@@ -319,7 +324,7 @@ const Order = () => {
                             <td>{data.itemCategory}</td>
                             <td>{data.measurement}</td>
                             <td>{data.quantity}</td>
-                            <td>{(data.price).toString()}</td>
+                            <td><b>$&nbsp;{Number(data.price).toFixed(2).toString()}</b></td>
                             <td>
                             <button
                                 disabled={selectedCustomer? data.quantity===0?true:false: true}

@@ -25,7 +25,7 @@ const ViewOrder = () => {
     })
     const getAllCustomers = async () => {
         try {
-            if(userName===null || userName===""){
+            if(userName==null || userName==""){
                 if(localStorage.getItem('user')){
                      userName=JSON.parse(localStorage.getItem("user")).username;
                 }}
@@ -95,11 +95,11 @@ const ViewOrder = () => {
                     <Modal.Body>
                       <Container>
                         <div ref={componentPDF} style={{width: '80%', margin: '40px'}}>
-                           <p><b>Transaction ID:</b>&nbsp;&nbsp;{selectedTransaction.transactionId}</p>
-                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', })}</p>
+                           <p><b>Order ID:</b>&nbsp;&nbsp;{selectedTransaction.transactionId}</p>
+                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',  hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true})}</p>
                            <p><b>Customer:</b>&nbsp;&nbsp;{(allCustomers? (allCustomers.find((item) => item.id === selectedTransaction.userId) || {}).customername: '')}</p>
                            <p><b>STATUS:</b>&nbsp;&nbsp;{selectedTransaction.transactionStatus}</p>
-                           <p><b>TOTAL:&nbsp;&nbsp;$&nbsp;{selectedTransaction.transactionTotal}</b></p>
+                           <p><b>TOTAL:&nbsp;&nbsp;$&nbsp;{Number(selectedTransaction.transactionTotal).toFixed(2).toString()}</b></p>
                            <h4>ORDERED PRODUCTS</h4>
                            {selectedTransaction.transactionItems && (selectedTransaction.transactionItems).length > 0 ? (
                             <Container>
@@ -121,9 +121,10 @@ const ViewOrder = () => {
                                         <tr key={index}>
                                            <td>{data.itemName}</td>
                                            <td>{data.itemCategory}</td>
-                                           <td>{data.itemCartPrice}</td>
+                                           <td>$&nbsp;{Number(data.itemCartPrice).toFixed(2).toString()}</td>
                                            <td>{data.itemQuantity}</td>
-                                           <td>{data.totalPrice}</td>
+                                           
+                                           <td><b>$&nbsp;{Number(data.totalPrice).toFixed(2).toString()}</b></td>
                                         </tr>
                                         );
                                     })}
@@ -196,7 +197,7 @@ const ViewOrder = () => {
                           <tr key={index}>
                             <td>{(allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).customername: '')}</td>
                             <td>{new Date((data.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', }) }</td>
-                            <td><b>&nbsp;{(data.transactionTotal).toString()}</b></td>
+                            <td><b>$&nbsp;{Number(data.transactionTotal).toFixed(2).toString()}</b></td>
                             <td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
                             ><FaEye size={30} color="blue" /> </Button></td>
                           </tr>

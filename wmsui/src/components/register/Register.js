@@ -198,7 +198,7 @@ const Register = () => {
             </Form.Label>
           </Col>
           <Col lg={{ span: 3 }} sm={12} md={6}>
-            <Form.Control type="text" placeholder="Driver License" value={i_d} onChange={(e) => { setI_d(e.target.value) }} required />
+            <Form.Control type="text" placeholder={userRole==="sales person"?"TAX ID":"Driver License"} value={i_d} onChange={(e) => { setI_d(e.target.value) }} required />
             <Form.Control.Feedback type="invalid">
              ID required.
             </Form.Control.Feedback>
@@ -285,11 +285,11 @@ const Register = () => {
           <Col lg={{ span: 3 }} sm={12} md={6}>
                 <Form.Select aria-label="Roles" value={role} onChange={(e) => { handleRoleChange(e.target.value) }} required>
                       <option value="">Select Role</option>       
-                        <option disabled={userRole==="manager"?false:true} value="sales person">Sales Person</option>
-                      <option disabled={userRole==="manager"?false:true} value="driver">Driver</option>
-                      <option disabled={userRole==="manager"?false:true} value="accountant">Accountant</option>
-                      <option disabled={userRole==="manager"?false:true} value="packer">Packer</option>
-                      <option disabled={userRole==="manager"?true:false} value="customer">Customer</option>
+                        <option disabled={userRole=="manager"?false:true} value="sales person">Sales Person</option>
+                      <option disabled={userRole=="manager"?false:true} value="driver">Driver</option>
+                      <option disabled={userRole=="manager"?false:true} value="accountant">Accountant</option>
+                      <option disabled={userRole=="manager"?false:true} value="packer">Packer</option>
+                      <option disabled={userRole=="manager"?true:false} value="customer">Customer</option>
                     
                 </Form.Select>
           </Col>

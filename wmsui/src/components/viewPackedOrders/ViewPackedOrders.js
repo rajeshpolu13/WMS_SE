@@ -37,7 +37,7 @@ const ViewPackedOrders = () => {
     }
     const getAllCustomers = async () => {
         try {
-            if(userName===null || userName===""){
+            if(userName==null || userName==""){
                 if(localStorage.getItem('user')){
                      userName=JSON.parse(localStorage.getItem("user")).username;
                 }}
@@ -103,7 +103,7 @@ const ViewPackedOrders = () => {
                       <Container>
                         <div ref={componentPDF} style={{width: '80%', margin: '40px'}}>
                            <p><b>Order ID:</b>&nbsp;&nbsp;{selectedTransaction.transactionId}</p>
-                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', })}</p>
+                           <p><b>Date: </b>&nbsp;&nbsp;{ new Date((selectedTransaction.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',  hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true})}</p>
                            <p><b>Customer:</b>&nbsp;&nbsp;{(allCustomers? (allCustomers.find((item) => item.id === selectedTransaction.userId) || {}).customername: '')}</p>
                            <p><b>STATUS:</b>&nbsp;&nbsp;{(selectedTransaction.transactionStatus==="ordered"?'NEW':selectedTransaction.transactionStatus)}</p>
                            <p><b># of Items:</b>&nbsp;{(selectedTransaction.transactionItems).length}</p>
@@ -113,6 +113,7 @@ const ViewPackedOrders = () => {
                                 <Table>
                                 <thead>
                                     <tr>
+                                    <th>Product ID</th>
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Quantity</th>
@@ -126,19 +127,20 @@ const ViewPackedOrders = () => {
                                     selectedTransaction.transactionItems.map((data, index) => {
                                         return (
                                         <tr key={index}>
+                                            <td>{(products? (products.find((item) => item.itemId === data.itemId) || {}).itemProductId: '')}</td>
                                            <td>{data.itemName}</td>
                                            <td>{data.itemCategory}</td>
                                            <td>{data.itemQuantity}</td>
                                            <td>{(products? (products.find((item) => item.itemId === data.itemId) || {}).measurement: '')}</td>
-                                           <td>$&nbsp;{data.itemCartPrice}</td>
-                                           <td><b>$&nbsp;{data.totalPrice}</b></td>
+                                           <td>$&nbsp;{Number(data.itemCartPrice).toFixed(2).toString()}</td>
+                                           <td><b>$&nbsp;{Number(data.totalPrice).toFixed(2).toString()}</b></td>
                                         </tr>
                                         );
                                     })}
                                 </tbody>
                                 </Table>
                                 <br />
-                                <h3 style={{textAlign:'right'}}><b>TOTAL:&nbsp;&nbsp;$&nbsp;{selectedTransaction.transactionTotal}</b> </h3>
+                                <h3 style={{textAlign:'right'}}><b>TOTAL:&nbsp;&nbsp;$&nbsp;{Number(selectedTransaction.transactionTotal).toFixed(2).toString()}</b> </h3>
                             </Container>
                             ) : null}
                         </div>
