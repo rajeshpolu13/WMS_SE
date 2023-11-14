@@ -13,7 +13,8 @@ const ViewOrder = () => {
     const [menuError, setMenuError] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState("");
     const [selectedTransaction, setSelectedTransaction] = useState(null);
-    const [menuData, setMenuData] = useState(null);  
+    const [menuData, setMenuData] = useState(null);
+    const [products, setProducts] = useState([]);
     const [allCustomers, setAllCustomers] = useState(null); // All customers under logged in salesperson
     const [showCartModel, setShowCartModel] = useState(false);
     let userName = useSelector((state) => state.loginReducer.userInfo.username);
@@ -42,7 +43,19 @@ const ViewOrder = () => {
             console.log(err,"Error in retrieving orders");
         }
     }
-
+    const getAllProducts = async () => {
+      try {
+          let resp = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
+              pageNum: -1,
+              searchItem: "",
+              searchCategory: ""
+          });
+          setProducts(resp.data);
+      }
+      catch (err) {
+          console.log(err);
+      }
+  }
     const getOrderItems = async (value) => {
         try {
                 setMenuError(true);
@@ -79,6 +92,7 @@ const ViewOrder = () => {
     useEffect(
          () => {
              getAllCustomers();
+             getAllProducts();
         }, []);
     
         return (
@@ -106,6 +120,7 @@ const ViewOrder = () => {
                                 <Table>
                                 <thead>
                                     <tr>
+                                    <th>Product ID</th>
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Price</th>
@@ -119,6 +134,7 @@ const ViewOrder = () => {
                                     selectedTransaction.transactionItems.map((data, index) => {
                                         return (
                                         <tr key={index}>
+                                           <td>{(products? (products.find((item) => item.itemId === data.itemId) || {}).itemProductId: '')}</td>
                                            <td>{data.itemName}</td>
                                            <td>{data.itemCategory}</td>
                                            <td>$&nbsp;{Number(data.itemCartPrice).toFixed(2).toString()}</td>
