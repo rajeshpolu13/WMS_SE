@@ -31,7 +31,8 @@ router.post("/insert", async (req, res) => {
             role: req.body.role,
             customername: req.body.customername,
             customertype: req.body.customertype,
-            dueamount: req.body.dueamount
+            dueamount: req.body.dueamount,
+            salesperson: req.body.salesperson
         };
         let isInserted = await registrationModel.insertUser(user);
         if (isInserted) {
@@ -66,7 +67,8 @@ router.post("/update", async (req, res) => {
             role:req.body.role,
             customername: req.body.customername,
             customertype: req.body.customertype,
-            dueamount: req.body.dueamount
+            dueamount: req.body.dueamount,
+            salesperson: req.body.salesperson
         };
         // console.log(user);
         let isUpdated = await registrationModel.updateUser(user);

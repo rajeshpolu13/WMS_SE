@@ -6,12 +6,18 @@ var logger = require('morgan');
 const cors=require('cors');
 const dotenv=require('dotenv');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const usersRouter = require('./routes/users');
 const bodyparser=require('body-parser');
 var app = express();
 const registration=require("./routes/registrationRoutes");
 const login=require("./routes/loginRoutes");
 const profile=require("./routes/profileRoute");
+const inventoryRouter=require('./routes/inventoryRoutes');
+const customerRouter=require('./routes/customerRoutes');
+const cart=require("./routes/cartRoutes");
+const transaction = require('./routes/transactionRoute');
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -28,7 +34,11 @@ app.use('/', indexRouter);
 app.use("/registration",registration);
 app.use("/login", login);
 app.use("/profile",profile);
+app.use('/inventory',inventoryRouter);
+app.use('/customers',customerRouter);
 app.use('/users', usersRouter);
+app.use("/transaction",transaction);
+app.use("/cart",cart);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

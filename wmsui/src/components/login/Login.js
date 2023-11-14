@@ -9,7 +9,7 @@ import axios from "axios";
 import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from "react-router-dom";
 import {useSelector,useDispatch} from 'react-redux';
-import { login,setLoginUserInfo,setLiveTrack } from '../../redux-part/reducers/loginReducer';
+import { login,setLoginUserInfo } from '../../redux-part/reducers/loginReducer';
 
 
 const Login=()=>{
