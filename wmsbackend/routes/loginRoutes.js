@@ -14,14 +14,9 @@ router.post("/validate", async (req, res, next) => {
     try {
 
         const passphrase = '123';
-        // console.log('data before encrypt');
         const pass=req.body.password;
         const bytes = CryptoJS.AES.decrypt(pass, passphrase);
         const originalText = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log("decrypted data");
-        // console.log(originalText);
-        // console.log("decrypt end");
-
         let logins = {
             username:req.body.username,
             password:originalText
@@ -48,25 +43,8 @@ router.post("/validate", async (req, res, next) => {
 
 router.post("/verify",authVerify.authenticateToken,async(req,res,next)=>{
 
-    console.log(req.body);
     res.json(req.body);
 
 })
-
-router.post("/forgotpassword", async (req, res, next) => {
-    try {   
-        let findmail = await loginModel.findpassword(req.body.email);
-        if (findmail) {
-        console.log("GET password success");
-        res.json(findmail);
-        }
-        
-    }
-    catch (e) {
-        console.log("GET /password Failed");
-        res.statusCode=e.status||500;
-        res.json({"message":e.message});
-    }
-});
 
 module.exports = router;
