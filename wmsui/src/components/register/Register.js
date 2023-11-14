@@ -10,8 +10,7 @@ import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 //Reducer
-import { useSelector, useDispatch } from 'react-redux';
-import { login, logout, setLoginUserInfo, clearLoginUserInfo, setOffersInfo, setLiveTrack } from '../../redux-part/reducers/loginReducer';
+import { useSelector } from 'react-redux';
 
 const Register = () => {
 
@@ -32,6 +31,7 @@ const Register = () => {
   const [customername, setCustomerName] = useState("");
   const [customertype, setCustomerType] = useState("");
   const [dueamount, setDueAmount]= useState(0);
+  const [salesperson, setSalesperson]= useState("");
   const [errmessage, setErrMessage] = useState(false);
   const [validated, setValidated] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
@@ -39,7 +39,7 @@ const Register = () => {
   const [errmessagezip, setErrMessagezip] = useState("");
   const [show, setShow] = useState(false);
   let userRole = useSelector((state) => state.loginReducer.userInfo.role);
-
+  let userName = useSelector((state) => state.loginReducer.userInfo.username);
   function redirectToLogin() {
     navigate('/login');
   }
@@ -62,7 +62,7 @@ const Register = () => {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={redirectToLogin}>Login</Button>
+          <Button type='submit' onClick={(e)=>{window.location.reload()}}>Close</Button>
         </Modal.Footer>
       </Modal>
     );
@@ -116,13 +116,13 @@ const Register = () => {
         role,
         customername,
         customertype,
-        dueamount
+        dueamount,
+        salesperson
       }
       regdetails.password = encryptWithAES(regdetails.password);
       
       axios.post(`${process.env.REACT_APP_API_URL}/registration/insert`, regdetails).then(
         res => {
-          console.log(res);
           setErrMessage(false);
           setShow(true);
         }
@@ -133,6 +133,18 @@ const Register = () => {
     }
     setValidated(true);
   };
+
+  const handleRoleChange = (ROLE) => {
+    if(ROLE==="customer")
+      {
+        setRole(ROLE);
+        setSalesperson(userName);
+      }
+    else{
+      setRole(ROLE);
+      setSalesperson("");
+    }
+  }
   
 
   return (<>
@@ -271,9 +283,8 @@ const Register = () => {
             </Form.Label>
           </Col>
           <Col lg={{ span: 3 }} sm={12} md={6}>
-                <Form.Select aria-label="Roles" value={role} onChange={(e) => { setRole(e.target.value) }} required>
-                      <option value="">Select Role</option>
-                                     
+                <Form.Select aria-label="Roles" value={role} onChange={(e) => { handleRoleChange(e.target.value) }} required>
+                      <option value="">Select Role</option>       
                         <option disabled={userRole==="manager"?false:true} value="sales person">Sales Person</option>
                       <option disabled={userRole==="manager"?false:true} value="driver">Driver</option>
                       <option disabled={userRole==="manager"?false:true} value="accountant">Accountant</option>
@@ -284,7 +295,8 @@ const Register = () => {
           </Col>
         </Form.Group>
 
-        {role==="customer"?<div><Form.Group as={Row} className="mb-3" controlId="formHorizontalCustomerName">
+        {role==="customer"?<div>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalCustomerName">
           <Col lg={{ span: 1, offset: 4 }} sm={12} md={6}>
             <Form.Label>
               Store Name
@@ -308,7 +320,18 @@ const Register = () => {
                       <option  value="wholesale">Wholesale</option>
                 </Form.Select>
           </Col>
-        </Form.Group></div>:null}
+        </Form.Group>
+        <Form.Group as={Row} className="mb-3" controlId="formHorizontalCustomerName">
+          <Col lg={{ span: 1, offset: 4 }} sm={12} md={6}>
+            <Form.Label>
+              Sales person
+            </Form.Label>
+          </Col>
+          <Col lg={{ span: 3 }} sm={12} md={6}>
+            <Form.Control readOnly type="text" value={salesperson} onChange={(e) => { setSalesperson(e.target.value) }} />
+          </Col>
+        </Form.Group>
+        </div>:null}
 
         <Row className="mb-3">
           <Form.Group as={Col} controlId="validationCustom06" lg={{ span: 3, offset: 4 }} sm={12} md={6}>
@@ -328,7 +351,7 @@ const Register = () => {
             {
               (errmessagezip === true) ?
                 <div>
-                  <p class="text-danger">phone enter a valid ZIP code</p>
+                  <p class="text-danger">Enter a valid ZIP code</p>
                 </div> : <div></div>
             }
           </Form.Group>

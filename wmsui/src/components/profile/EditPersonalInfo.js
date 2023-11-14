@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, FormGroup, Modal, Nav, Row } from "react-bootstrap"
+import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap"
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 
 const EditPersonalInfo = () => {
@@ -18,8 +18,6 @@ const EditPersonalInfo = () => {
   const [zip, setZip] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
-  const [modalShow, setModalShow] = useState(false);
-  const [errmessage, setErrMessage] = useState(false);
   const [errmessagephone, setErrMessagePhone] = useState(false);
   const [errmessagezip, setErrMessagezip] = useState(false);
   const [updatesuccess, setUpdateSuccess] = useState(false);
@@ -163,7 +161,7 @@ const EditPersonalInfo = () => {
                       <Form.Control type="text" value={lname} onChange={(e) => { setLname(e.target.value) }} required />
                     </Col>
                   </Row>
-                  {role!="manager"?<Row className="p-2">
+                  {role!=="manager"?<Row className="p-2">
                     <Col xs={{ span: 3 }}>ID</Col>
                     <Col xs={{ span: 5 }}>
                       <Form.Control type="text" value={i_d} onChange={(e) => { setI_d(e.target.value) }} required />
@@ -249,7 +247,7 @@ const EditPersonalInfo = () => {
               </Form>
               <MyVerticallyCenteredModal
                 show={updatesuccess}
-                onHide={() => setModalShow(false)} />
+                onHide={() => setUpdateSuccess(false)} />
             </Container>
           </Col>
         </Row>
