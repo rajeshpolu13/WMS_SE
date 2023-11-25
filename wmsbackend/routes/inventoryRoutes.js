@@ -75,7 +75,8 @@ router.post("/insertItem", upload.single("itemImage"), async (req, res, next) =>
             measurement:req.body.measurement,
             quantity:0,
             itemImage:req.body.itemImage,
-            price: req.body.price
+            price: req.body.price,
+            isActive: "1"
         };
         let itemAlreadyExist = await inventoryModel.getNameOfItem(req.body.itemName, "1");
         if (itemAlreadyExist === false)
