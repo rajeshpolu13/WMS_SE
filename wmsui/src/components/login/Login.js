@@ -16,7 +16,7 @@ const Login=()=>{
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errmessage, setErrMessage] = useState("false");
+  const [errmessage, setErrMessage] = useState(false);
   const [validated, setValidated] = useState(false);
 
   const dispatch = useDispatch();
@@ -71,9 +71,9 @@ const Login=()=>{
     <Container className="login-center-items text-center">
     <div className=" form-signin w-100 m-auto">
         <h1>Login</h1>
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        <Form noValidate validated={validated}>
         {
-        (errmessage === true)? 
+        ((errmessage === true)&& username!=="" && password!=="")? 
         <div>
           <Alert variant="danger">invalid login</Alert>
         </div>:<div></div>
@@ -84,7 +84,7 @@ const Login=()=>{
         <Form.Control 
         type="text" 
         value={username} 
-          onChange={(e) => { setUsername(e.target.value) }} 
+          onChange={(e) => { setUsername(e.target.value); setErrMessage(false)}} 
           required />
           <Form.Control.Feedback type="invalid">
             Username is required.
@@ -97,7 +97,7 @@ const Login=()=>{
           <Form.Control 
           type="password" 
           value={password} 
-          onChange={(e) => { setPassword(e.target.value)}}
+          onChange={(e) => { setPassword(e.target.value); setErrMessage(false)}}
           required />
           <Form.Control.Feedback type="invalid">
             Password is required.
@@ -107,9 +107,10 @@ const Login=()=>{
         <Row>
         <Col>
         <br></br> 
-          <Button variant="link" onClick={Register}>New? click here to register</Button>
-          <br></br> 
-        <Button type="submit">Login</Button>
+        <b>Authorized Access Only</b> 
+        <br></br>
+        <br></br>
+        <Button type="submit" onClick={(e)=>{handleSubmit(e)}}>Login</Button>
         </Col>
         </Row>
       <br/>

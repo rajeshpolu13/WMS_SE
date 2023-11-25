@@ -30,10 +30,37 @@ inventoryOperations.updateItem=async(data)=>{
     }
 }
 
-inventoryOperations.getNameOfItem=async(itemName)=>{
+inventoryOperations.deleteItem=async(data)=>{
+    try {
+        let inventoryModel = await inventoryCollection.getInventoryCollection();
+           let isRecordUpdated= await inventoryModel.updateOne(
+            {'itemId': data.itemId},
+            {$set:{'isActive': '0'}}
+           );
+
+            if(isRecordUpdated){
+                return true;
+            }
+            else{
+                let err=new Error("Failed to delete record");
+                err.status=401;
+                throw err;
+            }
+            
+        
+    } catch (error) {
+        console.log(error);
+        if(!error.status){
+            error.status=404;
+        }
+        throw error;
+    }
+}
+
+inventoryOperations.getNameOfItem=async(itemName,isActive)=>{
     try{
         let inventoryModel=await inventoryCollection.getInventoryCollection();
-        let isItemExist=await inventoryModel.find({itemName:itemName});
+        let isItemExist=await inventoryModel.find({itemName:itemName, isActive: isActive});
         if(isItemExist.length>0){
             return true;
         }

@@ -1,10 +1,8 @@
 import Profile from "../components/profile/Profile";
 import { Nav } from "react-bootstrap";
 import { Link, Route, Routes } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const ProfileNavBar=()=>{
-  let userRole = useSelector((state) => state.loginReducer.userInfo.role);
 return(
     <div>
     <Nav fill variant="tabs" defaultActiveKey="/home">

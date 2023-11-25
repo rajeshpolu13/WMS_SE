@@ -117,7 +117,7 @@ const Inventory = () => {
 
     const getThatPage = (number) => {
       //  console.log(parseInt(number.target.innerText));
-        let pageNo = parseInt(number.target.innerText);
+        let pageNo = (number.target.innerText);
         setActivePage(pageNo);
     }
     let items = [];
@@ -157,7 +157,7 @@ const Inventory = () => {
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Produce name is required.
+                      Product name is required.
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -176,7 +176,7 @@ const Inventory = () => {
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Produce ID is required.
+                      Product ID is required.
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -205,7 +205,7 @@ const Inventory = () => {
                       <option value="Household">Household Products</option>
                     </Form.Select>
                     <Form.Control.Feedback type="invalid">
-                      Produce Category is required.
+                      Product Category is required.
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -385,7 +385,7 @@ const Inventory = () => {
                         navigate("/addItem");
                       }}
                     >
-                      Add Inventory
+                      Add Product
                     </Button>
                   ) : null}
                 </Col>
@@ -444,7 +444,7 @@ const Inventory = () => {
                             <td>{data.itemCategory}</td>
                             <td>{data.measurement}</td>
                             <td>{data.quantity}</td>
-                            <td>{(data.price).toString()}</td>
+                            <td><b>$&nbsp;{Number(data.price).toFixed(2).toString()}</b></td>
                             {userRole === "manager" ? (
                               <td>
                                 <button
@@ -457,7 +457,7 @@ const Inventory = () => {
                                     setMeasurement(data.measurement);
                                     setQuantity(data.quantity);
                                     setItemImage(data.itemImage);
-                                    setPrice(parseInt(data.price));
+                                    setPrice(Number(data.price));
                                     handleShowUpdate();
                                   }}
                                 >

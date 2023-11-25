@@ -37,12 +37,17 @@ export const LoginSclice = createSlice({
                 state.userInfo.username=null;
                 state.userInfo.firstName=null;
                 state.userInfo.role=null;
+        },
+        setcheckoutInfo:(state,action)=>{
+            state.checkoutInfo.cartItems=action.payload.cartItems;
+            state.checkoutInfo.totalBill=action.payload.totalBill;
+            state.checkoutInfo.userId= action.payload.userId;
         }
 
     },
 
 })
 
-export const {login,logout,increaseCartCount,setLoginUserInfo,clearLoginUserInfo} = LoginSclice.actions;
+export const {login,logout,increaseCartCount,setLoginUserInfo,setcheckoutInfo,clearLoginUserInfo} = LoginSclice.actions;
 
 export default LoginSclice.reducer;

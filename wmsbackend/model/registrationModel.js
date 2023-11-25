@@ -39,13 +39,33 @@ registrationOperations.updateUser=async(data)=>{
     try {
         let registrationModel = await registartionModelConnection.getRegistrationCollection();
         let myquery = { id:data.id };
-        let newvalues = { $set: {i_d:data.i_d, fname: data.fname, lname:data.lname, dob:data.dob, username:data.username, password:data.password, address:data.address, zip:data.zip, city:data.city, state:data.state, phone:data.phone, role: data.role, customername:data.customername, customertype: data.customertype, dueamount: data.dueamount} };
+        let newvalues = {
+          $set: {
+            i_d: data.i_d,
+            fname: data.fname,
+            lname: data.lname,
+            dob: data.dob,
+            username: data.username,
+            password: data.password,
+            address: data.address,
+            zip: data.zip,
+            city: data.city,
+            state: data.state,
+            phone: data.phone,
+            role: data.role,
+            customername: data.customername,
+            customertype: data.customertype,
+            dueamount: data.dueamount,
+            salesperson: data.salesperson,
+            latitude: data.latitude,
+            longitude: data.longitude
+          },
+        };
         let isRecordMatch= await  registrationModel.find({id : data.id});
         if(isRecordMatch.length === 1)
         {
-            // console.log("record matched");
             let isRecordUpdated= await registrationModel.updateOne(myquery, newvalues);
-        //    console.log(isRecordUpdated);
+   
             if(isRecordUpdated){
                 return true;
             }

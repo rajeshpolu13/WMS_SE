@@ -18,10 +18,15 @@ const ViewCustomer = () => {
 
     const getAllCustomers = async () => {
         try {
+          if(userName==null || userName==""){
+            if(localStorage.getItem('user')){
+                userName=JSON.parse(localStorage.getItem("user")).username;
+            }}
+          console.log(userName);
             let resp = await axios.post(`${process.env.REACT_APP_API_URL}/customers/getCustomersByName`, {
                 pageNum: activePage,
                 searchCustomer: searchCustomer,
-                searchSalesperson: searchSalesperson
+                searchSalesperson: userRole=="sales person"?userName: ""
             });
             setAllCustomers(resp.data);
             setError(false);
@@ -42,7 +47,7 @@ const ViewCustomer = () => {
 
     useEffect(
         () => {
-          {userRole==="sales person"?setSearchSalesperson(userName): getAllSalespersons()};
+          {userRole=="sales person"?setSearchSalesperson(userName): getAllSalespersons()};
           setAllCustomers(null);
             getPagesCount();
             getAllCustomers();
@@ -64,10 +69,14 @@ const ViewCustomer = () => {
         getPagesCount();
         setActivePage(0);
         setAllCustomers([]);
+        if(userName==null || userName==""){
+          if(localStorage.getItem('user')){
+              userName=JSON.parse(localStorage.getItem("user")).username;
+          }}
         axios.post(`${process.env.REACT_APP_API_URL}/customers/getCustomersByName`, {
             pageNum: activePage,
             searchCustomer: searchCustomer,
-            searchSalesperson: searchSalesperson
+            searchSalesperson: userRole=="sales person"?userName: searchSalesperson
         })
             .then(results => {
               setAllCustomers(results.data);
@@ -113,7 +122,7 @@ const ViewCustomer = () => {
                 retreiveItems(e);
               }}>
               <Row>
-                {userRole==="sales person"?
+                {userRole=="sales person"?
                 null:
                 <Col className="col-md-4">
                   <Form.Select
