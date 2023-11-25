@@ -79,7 +79,7 @@ const Order = () => {
 
         const getPagesCount = async () => {
             try {
-                let countRes = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/itemCount`,{searchCategory: searchCategory, searchItem: searchItem});
+                let countRes = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/itemCount`,{searchCategory: searchCategory, searchItem: searchItem, isActive: "1"});
                 setPagesNum(countRes.data.count);
             } catch (e) {
                 setPagesNum(0);
@@ -94,7 +94,8 @@ const Order = () => {
             axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
                 pageNum: activePage,
                 searchItem: searchItem,
-                searchCategory: searchCategory
+                searchCategory: searchCategory,
+                isActive: "1"
             })
                 .then(results => {
                     setMenuData(results.data);
@@ -170,6 +171,7 @@ const Order = () => {
                   setShowCartModel(false);
                   let temp=(allCustomers? (allCustomers.find((data) => data.username === selectedCustomer) || {}).id: '');
                     getCartItems(temp);
+                    window.location.reload();
                   }}>Close</Button>
                     </Modal.Footer>
           </Modal>
@@ -278,7 +280,7 @@ const Order = () => {
             <Row>
               <Col>
                 <Alert variant="danger">
-                  <Alert.Heading>DATA ERROR</Alert.Heading>
+                  <Alert.Heading>NO DATA FOUND</Alert.Heading>
                   <p>There is no data avaiable for your request.</p>
                 </Alert>
               </Col>
@@ -327,7 +329,7 @@ const Order = () => {
                             <td><b>$&nbsp;{Number(data.price).toFixed(2).toString()}</b></td>
                             <td>
                             <button
-                                disabled={selectedCustomer? data.quantity===0?true:false: true}
+                                disabled={selectedCustomer? data.quantity<=0?true:false: true}
                                 className="btn btn-info"
                                 onClick={(e) => {
                                     handleAddTocart(e, {

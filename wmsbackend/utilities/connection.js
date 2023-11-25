@@ -24,7 +24,9 @@ const RegistrationSchema = Schema(
     customername: { type: String },
     customertype: { type: String },
     dueamount: { type: String },
-    salesperson: {type: String}
+    salesperson: {type: String},
+    latitude: {type: String},
+    longitude: {type: String}
     }, { collection: "Users" }
 )
 
@@ -38,7 +40,8 @@ const InventorySchema = Schema(
         measurement:{type:String},  
         quantity:{type: Number},
         itemImage: { type:String},
-        price: {type:String}
+        price: {type:String},
+        isActive: {type:String}
     }, { collection: "Inventory" }
 )
 
@@ -63,7 +66,13 @@ const transactionSchema = Schema(
         transactionDate:{type:Date},
         transactionTotal:{type:String},
         transactionType:{type:String},
-        userId:{type:String}
+        userId:{type:String},
+        driveRoute:{type:Array},
+        paymentStatus: {type:String},
+        receivedAmount: {type:String},
+        modeOfPayment: {type:String},
+        comments: {type:String},
+        driver: {type: String}
     },{collection:"Transaction"}
 )
 

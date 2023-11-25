@@ -122,13 +122,13 @@ const ViewOrderByPacker = () => {
     const handleModel = async (items) =>{
         setSelectedTransaction(items);
         setShowCartModel(true);
-        getOrderItems();
+        getOrderItems()
     }
     const handlePackModel = async (items) =>{
         setSelectedTransaction(items);
         handleSizeChange((items.transactionItems).length);
         setShowPackModel(true);
-        getOrderItems();
+       getOrderItems()
     }
     useEffect(
          () => {
@@ -201,6 +201,7 @@ const ViewOrderByPacker = () => {
                 </Modal> }
                 {selectedTransaction && <Modal size="lg" centered fullscreen={true} show={showPackModel} onHide={(e)=>{
                     handleSizeChange(0);
+                    window.location.reload()
                     setSelectedTransaction(null);
                   setShowPackModel(false);
                   setConfirmPack(false);
@@ -266,13 +267,14 @@ const ViewOrderByPacker = () => {
                     </Modal.Body>
                     <Modal.Footer>
                         {confirmPack===true?null:<Button variant='success' onClick={(e)=>{setConfirmPack(true)}}>PACK</Button>}
-                        {confirmPack===true?<><p>Are you Sure?</p><Button variant='danger' onClick={async(e)=>{await updateItemQuantity(e,selectedTransaction);setSelectedTransaction(null);setShowPackModel(false);handleSizeChange(0);setConfirmPack(false);}}>YES</Button></>:null}
+                        {confirmPack===true?<><p>Are you Sure?</p><Button variant='danger' onClick={async(e)=>{await updateItemQuantity(e,selectedTransaction);setSelectedTransaction(null);setShowPackModel(false);handleSizeChange(0);setConfirmPack(false);window.location.reload()}}>YES</Button></>:null}
 
                         {confirmPack===true?<Button variant='success' onClick={(e)=>{setConfirmPack(false)}}>No</Button>:null}
                       <Button onClick={(e)=>{
                         handleSizeChange(0);
                         setSelectedTransaction(null);
                         setShowPackModel(false);
+                        window.location.reload()
                   }}>Close</Button>
                     </Modal.Footer>
                 </Modal> }
@@ -339,8 +341,7 @@ const ViewOrderByPacker = () => {
             <Row>
               <Col>
                 <Alert variant="danger">
-                  <Alert.Heading>DATA ERROR</Alert.Heading>
-                  <p>There is no transaction data available for your request.</p>
+                  <Alert.Heading>No New orders available currently</Alert.Heading>
                 </Alert>
               </Col>
             </Row>

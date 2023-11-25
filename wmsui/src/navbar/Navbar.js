@@ -15,7 +15,13 @@ import Order from '../components/order/Order';
 import ViewOrder from '../components/viewOrder/ViewOrder';
 import ViewOrderByPacker from '../components/viewOrderByPacker/ViewOrderByPacker';
 import ViewPackedOrders from '../components/viewPackedOrders/ViewPackedOrders';
+import MakeRoute from '../components/makeRoute/MakeRoute';
 import Cart from "../components/cart/Cart";
+import OrdersToDeliver from "../components/ordersToDeliver/OrdersToDeliver";
+import OrdersDelivered from "../components/ordersDelivered/OrdersDelivered";
+import Accountant from "../components/accountant/Accountant";
+import Sales from "../components/sales/Sales";
+import ViewOrdersOfCustomers from "../components/viewOrdersOfCustomers/ViewOrdersOfCustomers";
 //Reducer
 import { useSelector, useDispatch } from 'react-redux';
 import { login, logout, setLoginUserInfo, clearLoginUserInfo } from '../redux-part/reducers/loginReducer';
@@ -70,7 +76,14 @@ const Navigationbar = () => {
                 Home
               </Nav.Link>
               {loginStatus &&
-              (userRole === "packer") ? (
+              userRole == "customer" ? (
+                <Nav.Link as={Link} to="/viewpackedorders">
+                  {" "}
+                  Orders{" "}
+                </Nav.Link>
+              ) : null}
+              {loginStatus &&
+              (userRole == "packer" || userRole== "manager") ? (
                 <NavDropdown title="Orders">
                     <NavDropdown.Item as={Link} to="/vieworderbypacker">
                       {" "}
@@ -83,7 +96,7 @@ const Navigationbar = () => {
                 </NavDropdown>
               ) : null}
               {loginStatus &&
-              (userRole === "manager" || userRole === "sales person") ? (
+              (userRole === "manager" || userRole === "sales person" || userRole=== "packer") ? (
                 <Nav.Link as={Link} to="/inventory">
                   {" "}
                   Products{" "}
@@ -106,7 +119,7 @@ const Navigationbar = () => {
               ) : null}
               {loginStatus &&
               (userRole === "manager") ? (
-                <Nav.Link as={Link} to="/home">
+                <Nav.Link as={Link} to="/makeroute">
                   {" "}
                   Make route{" "}
                 </Nav.Link>
@@ -123,6 +136,40 @@ const Navigationbar = () => {
                     Orders List{" "}
                   </NavDropdown.Item>
                 </NavDropdown>
+              ) : null}
+              {loginStatus &&
+              (userRole == "driver" || userRole== "manager") ? (
+                <NavDropdown title="Delivery">
+                    {userRole == "driver" ?<NavDropdown.Item as={Link} to="/orderstodeliver">
+                      {" "}
+                      New Orders to deliver{" "}
+                    </NavDropdown.Item>:null}
+                  <NavDropdown.Item as={Link} to="/ordersdelivered">
+                    {" "}
+                    Delivered Orders{" "}
+                  </NavDropdown.Item>
+                </NavDropdown>
+              ) : null}
+              {loginStatus &&
+              (userRole == "accountant" || userRole== "manager") ? (
+                <Nav.Link as={Link} to="/sales">
+                  {" "}
+                  SALES{" "}
+                </Nav.Link>
+              ) : null}
+              {loginStatus &&
+              (userRole === "accountant") ? (
+                <Nav.Link as={Link} to="/accountant">
+                  {" "}
+                  Orders{" "}
+                </Nav.Link>
+              ) : null}
+                  {loginStatus &&
+              (userRole === "accountant") ? (
+                <Nav.Link as={Link} to="/viewcustomer">
+                  {" "}
+                  View Customers{" "}
+                </Nav.Link>
               ) : null}
             </Nav>
             <Nav>
@@ -177,15 +224,33 @@ const Navigationbar = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
-        {userRole === "manager" ? (
+        {(userRole == "driver" || userRole=="manager") ? (
+          <><Route path="/orderstodeliver" element={<OrdersToDeliver />} />
+          <Route path="/ordersdelivered" element={<OrdersDelivered />} /></>
+        ) : null}
+        {userRole == "customer" ? (
+         
+          
+          <Route path="/viewpackedorders" element={<ViewPackedOrders />} />
+        ) : null}
+        {userRole == "accountant" ? (
+          <Route path="/accountant" element={<Accountant />} />
+        ) : null}
+        {userRole == "manager" ? (
           <><Route path="/additem" element={<AddItem />} />
-          <Route path="/makeroute" element={<Home />} /></>
+          <Route path="/makeroute" element={<MakeRoute />} />
+          <Route path="/sales" element={<Sales />} />
+          </>
         ) : null}
-        {userRole === "packer" ? (
+        {(userRole == "packer" || userRole=="manager") ? (
           <><Route path="/vieworderbypacker" element={<ViewOrderByPacker />} />
-          <Route path="/viewpackedorders" element={<ViewPackedOrders />} /></>
+          <Route path="/viewpackedorders" element={<ViewPackedOrders />} />
+          </>
         ) : null}
-        {userRole === "sales person" ? (
+         {(userRole == "sales person" || userRole=="manager" || userRole=="accountant") ? (
+        <Route path="/viewOrdersOfCustomers/:selectedUserId" element={<ViewOrdersOfCustomers />} />
+        ) : null}
+        {userRole == "sales person" ? (
           <><Route path="/order" element={<Order />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/vieworder" element={<ViewOrder />} />
@@ -195,6 +260,7 @@ const Navigationbar = () => {
         <Route path="/pnav/*" element={<Pnavbar />} />
         <Route path="/editpersonalinfo" element={<EditPersonalInfo />} />
         <Route path="/viewcustomer" element={<ViewCustomer />} />
+        
       </Routes>
     </>
   );

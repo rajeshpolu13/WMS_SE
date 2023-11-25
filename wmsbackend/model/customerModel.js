@@ -32,6 +32,20 @@ customerOperations.getAllSalespersons=async(reqBody)=>{
     }
     }
 
+    customerOperations.getAllDrivers=async(reqBody)=>{
+        try{
+            let userModel = await userModelCollection.getRegistrationCollection();
+            let allDrivers = await userModel.find({role: "driver"});
+            return allDrivers;
+        }
+        catch(e){
+            let err = new Error("There are no drivers to return");
+            err.status = 404;
+            throw err;
+        }
+        }
+    
+
 customerOperations.getCount=async(reqBody)=>{
 try{
     let userModel = await userModelCollection.getRegistrationCollection();

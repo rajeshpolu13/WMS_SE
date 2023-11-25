@@ -157,7 +157,7 @@ const Inventory = () => {
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Produce name is required.
+                      Product name is required.
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -176,7 +176,7 @@ const Inventory = () => {
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Produce ID is required.
+                      Product ID is required.
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -205,7 +205,7 @@ const Inventory = () => {
                       <option value="Household">Household Products</option>
                     </Form.Select>
                     <Form.Control.Feedback type="invalid">
-                      Produce Category is required.
+                      Product Category is required.
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -444,7 +444,7 @@ const Inventory = () => {
                             <td>{data.itemCategory}</td>
                             <td>{data.measurement}</td>
                             <td>{data.quantity}</td>
-                            <td>$&nbsp;{Number(data.price).toFixed(2).toString()}</td>
+                            <td><b>$&nbsp;{Number(data.price).toFixed(2).toString()}</b></td>
                             {userRole === "manager" ? (
                               <td>
                                 <button
