@@ -1,8 +1,11 @@
 import React from 'react';
 import {Container, Row, Col, Pagination, Form, Button, Alert, Table} from 'react-bootstrap';
 import axios from "axios";
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import ViewOrdersOfCustomers from "../viewOrdersOfCustomers/ViewOrdersOfCustomers";
+
 
 const ViewCustomer = () => {
     const [activePage, setActivePage] = useState(0);
@@ -13,15 +16,21 @@ const ViewCustomer = () => {
     const [allCustomers, setAllCustomers] = useState(null);
     const [allSalespersons, setAllSalespersons] = useState(null);  
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
     let userRole = useSelector((state) => state.loginReducer.userInfo.role);
     let userName = useSelector((state) => state.loginReducer.userInfo.userName);
 
     const getAllCustomers = async () => {
         try {
+          setError(false);
           if(userName==null || userName==""){
             if(localStorage.getItem('user')){
                 userName=JSON.parse(localStorage.getItem("user")).username;
             }}
+            if(userRole==null || userRole==""){
+              if(localStorage.getItem('user')){
+                userRole=JSON.parse(localStorage.getItem("user")).role;
+              }}
           console.log(userName);
             let resp = await axios.post(`${process.env.REACT_APP_API_URL}/customers/getCustomersByName`, {
                 pageNum: activePage,
@@ -29,10 +38,13 @@ const ViewCustomer = () => {
                 searchSalesperson: userRole=="sales person"?userName: ""
             });
             setAllCustomers(resp.data);
+            console.log((resp.data)[3].id,"DDDDDD");
             setError(false);
+            if(!resp.data)
+            {setError(true)}
         }
         catch (err) {
-            setError(true);
+            console.log(err);
         }
     }
     const getAllSalespersons = async () => {
@@ -107,6 +119,7 @@ const ViewCustomer = () => {
     }
 
     return (
+      selectedUserId==null?
       <>
         <Container className="mt-2">
 
@@ -163,7 +176,7 @@ const ViewCustomer = () => {
             <Row>
               <Col>
                 <Alert variant="danger">
-                  <Alert.Heading>DATA ERROR</Alert.Heading>
+                  <Alert.Heading>NO DATA FOUND</Alert.Heading>
                   <p>There is no data avaiable for your request.</p>
                 </Alert>
               </Col>
@@ -191,11 +204,15 @@ const ViewCustomer = () => {
                       allCustomers.map((data, index) => {
                         return (
                           <tr key={index}>
-                            <td><b>{data.customername}</b></td>
+                            <td>
+                            <Link onClick={(e) => {setSelectedUserId(data.id); console.log(data.id,"DATATATATA")}}>
+                                  <b>{data.customername}</b>
+                                </Link>
+                            </td>
                             <td>{data.customertype}</td>
                             <td>{data.fname+" "+data.lname}</td>
                             <td>{data.salesperson}</td>
-                            <td style={{'width':'5%'}}><p style={data.dueamount>0?{'background-color': 'red'}:{}}>{"$ "+(data.dueamount).toString()}</p></td>
+                            <td style={{'width':'10%'}}><p style={data.dueamount>0?{'backgroundColor': 'red', 'color': 'white'}:{}}>{"$ "+Number(data.dueamount).toFixed(2).toString()}</p></td>
                             <td>{data.address+" "+data.city+" "+data.state+" "+data.zip}</td>
                        
                           </tr>
@@ -222,7 +239,7 @@ const ViewCustomer = () => {
             </Col>
           </Row>
         </Container>
-      </>
+      </>:  <ViewOrdersOfCustomers selectedUserId={selectedUserId} />
     );
 }
 
