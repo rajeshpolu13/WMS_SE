@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container, Row, Col, Button, Alert, Table, Modal} from 'react-bootstrap';
+import {Container, Row, Col, Button, Alert, Table, Modal, Form} from 'react-bootstrap';
 import axios from "axios";
 import { useState, useEffect, useRef} from "react";
 import { useSelector } from "react-redux";
@@ -26,10 +26,15 @@ const ViewOrderByPacker = () => {
         onAfterPrint: () => alert("Data saved to PDF")
     })
     const [dataArray, setDataArray] = useState(Array(0).fill(0));
+    const [isInvalid, setIsInvalid] = useState(false);
       const handleInputChange = (index, value) => {
         setDataArray((prevData) => {
           const newData = [...prevData];
           newData[index] = parseInt(value);
+          const cond1 = newData.some((val, idx) => val > selectedTransaction.transactionItems[idx].itemQuantity);
+          const cond2 = newData.some((val, idx) => val > (products? (products.find((item) => item.itemId == selectedTransaction.transactionItems[idx].itemId) || {}).quantity: 0));
+        
+          setIsInvalid(cond1 || cond2);
           return newData;
         });
       };
@@ -71,7 +76,8 @@ const ViewOrderByPacker = () => {
             let resp = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
                 pageNum: -1,
                 searchItem: "",
-                searchCategory: ""
+                searchCategory: "",
+                isActive: ""
             });
             setProducts(resp.data);
         }
@@ -201,7 +207,7 @@ const ViewOrderByPacker = () => {
                 </Modal> }
                 {selectedTransaction && <Modal size="lg" centered fullscreen={true} show={showPackModel} onHide={(e)=>{
                     handleSizeChange(0);
-                    window.location.reload()
+                    window.location.reload();
                     setSelectedTransaction(null);
                   setShowPackModel(false);
                   setConfirmPack(false);
@@ -242,15 +248,15 @@ const ViewOrderByPacker = () => {
                                            <td>{data.itemName}</td>
                                            <td>{(products? (products.find((item) => item.itemId === data.itemId) || {}).measurement: '')}</td>
                                            <td>{data.itemQuantity}</td>
-                                           <td><input
-                                                    style={{width: "85px"}}
+                                           <td><Form.Control
+                                                    style={{width: "95px"}}
                                                     key={index}
                                                     type="number"
                                                     max={data.itemQuantity}
                                                     min={0}
                                                     value={dataArray[index] || 0}
                                                     onChange={(e) => handleInputChange(index, e.target.value)}
-                                                    
+                                                    isInvalid={dataArray[index] > data.itemQuantity ||dataArray[index] > (products? (products.find((item) => item.itemId == data.itemId) || {}).quantity: 0)} 
                                                     />
                                             </td>
                                            
@@ -266,8 +272,8 @@ const ViewOrderByPacker = () => {
                       </Container>
                     </Modal.Body>
                     <Modal.Footer>
-                        {confirmPack===true?null:<Button variant='success' onClick={(e)=>{setConfirmPack(true)}}>PACK</Button>}
-                        {confirmPack===true?<><p>Are you Sure?</p><Button variant='danger' onClick={async(e)=>{await updateItemQuantity(e,selectedTransaction);setSelectedTransaction(null);setShowPackModel(false);handleSizeChange(0);setConfirmPack(false);window.location.reload()}}>YES</Button></>:null}
+                        {confirmPack===true?null:<Button disabled={isInvalid} variant='success' onClick={(e)=>{setConfirmPack(true)}}>PACK</Button>}
+                        {confirmPack===true?<><p>Are you Sure?</p><Button disabled={isInvalid} variant='danger' onClick={async(e)=>{await updateItemQuantity(e,selectedTransaction);setSelectedTransaction(null);setShowPackModel(false);handleSizeChange(0);setConfirmPack(false);window.location.reload();}}>YES</Button></>:null}
 
                         {confirmPack===true?<Button variant='success' onClick={(e)=>{setConfirmPack(false)}}>No</Button>:null}
                       <Button onClick={(e)=>{

@@ -15,7 +15,8 @@ const ViewPackedOrders = () => {
     const [products, setProducts] = useState([]);
     const [allCustomers, setAllCustomers] = useState(null); // All customers under logged in salesperson
     const [showCartModel, setShowCartModel] = useState(false);
-    let userName = useSelector((state) => state.loginReducer.userInfo.username);
+    let userId = useSelector((state) => state.loginReducer.userInfo.userId);
+    let role = useSelector((state) => state.loginReducer.userInfo.role);
     const componentPDF = useRef();
     const generatePDF = useReactToPrint({
         content: ()=>componentPDF.current,
@@ -27,7 +28,8 @@ const ViewPackedOrders = () => {
             let resp = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
                 pageNum: -1,
                 searchItem: "",
-                searchCategory: ""
+                searchCategory: "",
+                isActive:""
             });
             setProducts(resp.data);
         }
@@ -37,10 +39,6 @@ const ViewPackedOrders = () => {
     }
     const getAllCustomers = async () => {
         try {
-            if(userName==null || userName==""){
-                if(localStorage.getItem('user')){
-                     userName=JSON.parse(localStorage.getItem("user")).username;
-                }}
 
             let resp = await axios.post(`${process.env.REACT_APP_API_URL}/customers/getCustomersByName`, {
                 pageNum: -1,
@@ -57,8 +55,16 @@ const ViewPackedOrders = () => {
 
     const getOrderItems = async () => {
         try {
+          if(userId==null || userId==""){
+            if(localStorage.getItem('user')){
+              userId=JSON.parse(localStorage.getItem("user")).userId;
+            }}
+            if(role==null || role==""){
+              if(localStorage.getItem('user')){
+                role=JSON.parse(localStorage.getItem("user")).role;
+              }}
                 setMenuError(true);
-                let resp = await axios.post(`${process.env.REACT_APP_API_URL}/transaction/gettransactions`, { userId: "", status: "packed"});
+                let resp = await axios.post(`${process.env.REACT_APP_API_URL}/transaction/gettransactions`, { userId: (role=="customer"?userId:""), status: (role=="customer"?"":"packed")});
                         
                     if (resp.data.length > 0) {
                         setMenuData(resp.data);
@@ -96,7 +102,7 @@ const ViewPackedOrders = () => {
                   }}>
                     <Modal.Header closeButton>
                       <Modal.Title id="contained-modal-title-vcenter">
-                       PRINT PACKED ORDER
+                       PRINT ORDER
                       </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -160,12 +166,12 @@ const ViewPackedOrders = () => {
               </Col>
               <Row className="menu-center-text">
                 <Col>
-                  <h2> PACKED ORDERS</h2>
+                  <h2 style={{'textAlign': 'left'}}> {role=="customer"?"MY ORDERS":"PACKED ORDERS"}</h2>
+                  <h4 style={{'textAlign': 'left'}}>{role=="customer"?"Due Amount: "+Number((allCustomers && allCustomers.find((item) => item.id == userId) || {}).dueamount).toFixed(2).toString():null}</h4>
                 </Col>
               </Row>
             </Container>
             <hr />
-        
 
         <Container className="mt-3">
           <Row>
@@ -174,6 +180,7 @@ const ViewPackedOrders = () => {
                 <Table>
                   <thead>
                     <tr>
+                      <th>Status</th>
                     <th>Customer</th>
                       <th>Ordered Date</th>
                       <th>Salesperson</th>
@@ -187,12 +194,13 @@ const ViewPackedOrders = () => {
                       menuData.map((data, index) => {
                         return (
                           <tr key={index}>
+                            <td><b>{data.transactionStatus}</b></td>
                             <td>{(allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).customername: '')}</td>
                             <td>{new Date((data.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', }) }</td>
                             <td>{allCustomers?(allCustomers.find((item) => item.id === data.userId) || {}).salesperson: ""}</td>
                             <td>{(data.transactionItems).length}</td>
-                            <td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
-                            ><FaPrint size={20} color="blue" /> </Button></td>
+                            {(role=="customer" && data.transactionStatus=="ordered")?null:<td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
+                            ><FaPrint size={20} color="blue" /> </Button></td>}
                           </tr>
                         );
                       })}
@@ -215,7 +223,7 @@ const ViewPackedOrders = () => {
             <Row>
               <Col>
                 <Alert variant="danger">
-                  <Alert.Heading>DATA ERROR</Alert.Heading>
+                  <Alert.Heading>NO DATA FOUND</Alert.Heading>
                   <p>There is no transaction data available for your request.</p>
                 </Alert>
               </Col>

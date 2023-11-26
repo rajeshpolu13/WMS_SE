@@ -44,6 +44,19 @@ router.get("/getAllSalespersons", async (req, res, next) => {
     }
 })
 
+router.get("/getAllDrivers", async (req, res, next) => {
+    try {
+        let searchResults = await customerModel.getAllDrivers();
+        console.log("POST /getAllDrivers/ success");
+        res.json(searchResults);
+    }
+    catch (e) {
+        console.log("GET /getAllDrivers/ failed");
+        res.statusCode = e.status || 500;
+        res.json(e.message);
+    }
+})
+
 
 router.post("/itemCount", async (req, res, next) => {
 
