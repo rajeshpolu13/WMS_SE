@@ -15,6 +15,7 @@ const Inventory = () => {
     const [menuData, setMenuData] = useState(null);  
     const [isLoading, setIsLoading] = useState(false);
     const [showUpdate, setShowUpdate] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const [itemId, setItemId] = useState("");
     const [itemName, setItemName] = useState("");
     const [itemProductId, setItemProductId] = useState("");
@@ -32,13 +33,19 @@ const Inventory = () => {
     {
       setShowUpdate(false);
     };
+    const handleCloseDelete = () => 
+    {
+      setShowDelete(false);
+    };
     const handleShowUpdate = () => setShowUpdate(true);
+    const handleShowDelete = () => setShowDelete(true);
     const getMenuItems = async () => {
         try {
             let resp = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
                 pageNum: activePage,
                 searchItem: searchItem,
-                searchCategory: searchCategory
+                searchCategory: searchCategory,
+                isActive: "1"
             });
             setMenuData(resp.data);
             setError(false);
@@ -80,10 +87,27 @@ const Inventory = () => {
                 setErrorMsg(true);
             })
         }
+        const deleteItem = async(e) => {
+          e.preventDefault();
+          var formData = {
+              itemId: itemId
+          };
+    
+          axios.post(`${process.env.REACT_APP_API_URL}/inventory/deleteitem`, formData, {
+            headers: { "Content-Type": "application/json" }
+          }).then(
+            res => {
+                  getMenuItems();
+                  setSuccessMsgUp(true);
+            }
+          ).catch(err => {
+              setErrorMsg(true);
+          })
+      }
 
     const getPagesCount = async () => {
         try {
-            let countRes = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/itemCount`,{searchCategory: searchCategory, searchItem: searchItem});
+            let countRes = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/itemCount`,{searchCategory: searchCategory, searchItem: searchItem, isActive: "1"});
             setPagesNum(countRes.data.count);
         } catch (e) {
             setPagesNum(0);
@@ -99,7 +123,8 @@ const Inventory = () => {
         axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
             pageNum: activePage,
             searchItem: searchItem,
-            searchCategory: searchCategory
+            searchCategory: searchCategory,
+            isActive: "1"
         })
             .then(results => {
                 setMenuData(results.data);
@@ -294,7 +319,46 @@ const Inventory = () => {
               </Form>
             </Modal.Body>
           </Modal>
-
+          <Modal
+            centered
+            size="xl"
+            show={showDelete}
+            onHide={() => handleCloseDelete()}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Delete[Inactive] Inventory Item</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <h3>ARE YOU SURE?...</h3>
+                <Row>
+                  <Col>
+                  <Button
+                      variant="warning"
+                      onClick={(f) => {
+                        handleCloseDelete(f, 10);
+                      }}
+                    >
+                      NO
+                    </Button>
+                  </Col>
+                  <Col>
+                    
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      onClick={async (f) => {
+                        await handleCloseDelete(f, 10);
+                        await deleteItem(f);
+                      }}
+                    >
+                      YES
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+            </Modal.Body>
+          </Modal>
           <Col>
             {successMessageUp === true ? (
               <Alert variant="success">
@@ -316,7 +380,7 @@ const Inventory = () => {
             {errorMsg === true ? (
               <Alert variant="danger">
                 <Alert.Heading>FAILURE</Alert.Heading>
-                <p>Failed to update item OR Unauthorized Access</p>
+                <p>Failed to update/delete item OR Unauthorized Access</p>
                 <hr />
 
                 <Button
@@ -398,7 +462,7 @@ const Inventory = () => {
             <Row>
               <Col>
                 <Alert variant="danger">
-                  <Alert.Heading>DATA ERROR</Alert.Heading>
+                  <Alert.Heading>NO DATA FOUND</Alert.Heading>
                   <p>There is no data avaiable for your request.</p>
                 </Alert>
               </Col>
@@ -419,7 +483,8 @@ const Inventory = () => {
                       <th>Category</th>
                       <th>Measurement</th>
                       <th>Quantity</th>
-                      <th>Price</th>
+                      {userRole=="packer"?null:<th>Price</th>}
+                      {userRole === "manager" ? <th></th> : null}
                       {userRole === "manager" ? <th></th> : null}
                     </tr>
                   </thead>
@@ -444,7 +509,7 @@ const Inventory = () => {
                             <td>{data.itemCategory}</td>
                             <td>{data.measurement}</td>
                             <td>{data.quantity}</td>
-                            <td><b>$&nbsp;{Number(data.price).toFixed(2).toString()}</b></td>
+                            {userRole=="packer"?null:<td><b>$&nbsp;{Number(data.price).toFixed(2).toString()}</b></td>}
                             {userRole === "manager" ? (
                               <td>
                                 <button
@@ -462,6 +527,19 @@ const Inventory = () => {
                                   }}
                                 >
                                   Update
+                                </button>
+                              </td>
+                            ) : null}
+                             {userRole === "manager" ? (
+                              <td>
+                                <button
+                                  className="btn btn-danger"
+                                  onClick={async (e) => {
+                                    setItemId(data.itemId);
+                                    handleShowDelete();
+                                  }}
+                                >
+                                  Delete
                                 </button>
                               </td>
                             ) : null}

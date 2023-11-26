@@ -32,7 +32,9 @@ router.post("/insert", async (req, res) => {
             customername: req.body.customername,
             customertype: req.body.customertype,
             dueamount: req.body.dueamount,
-            salesperson: req.body.salesperson
+            salesperson: req.body.salesperson,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude
         };
         let isInserted = await registrationModel.insertUser(user);
         if (isInserted) {
@@ -68,7 +70,9 @@ router.post("/update", async (req, res) => {
             customername: req.body.customername,
             customertype: req.body.customertype,
             dueamount: req.body.dueamount,
-            salesperson: req.body.salesperson
+            salesperson: req.body.salesperson,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude
         };
         // console.log(user);
         let isUpdated = await registrationModel.updateUser(user);
