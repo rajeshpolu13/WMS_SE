@@ -154,7 +154,7 @@ const Navigationbar = () => {
               (userRole == "accountant" || userRole== "manager") ? (
                 <Nav.Link as={Link} to="/sales">
                   {" "}
-                  SALES{" "}
+                  Sales{" "}
                 </Nav.Link>
               ) : null}
               {loginStatus &&
@@ -234,7 +234,8 @@ const Navigationbar = () => {
           <Route path="/viewpackedorders" element={<ViewPackedOrders />} />
         ) : null}
         {userRole == "accountant" ? (
-          <Route path="/accountant" element={<Accountant />} />
+          <><Route path="/accountant" element={<Accountant />} />
+          <Route path="/sales" element={<Sales />} /></>
         ) : null}
         {userRole == "manager" ? (
           <><Route path="/additem" element={<AddItem />} />

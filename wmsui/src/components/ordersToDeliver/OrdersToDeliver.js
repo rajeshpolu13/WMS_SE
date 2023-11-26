@@ -40,7 +40,8 @@ const OrdersToDeliver = () => {
               let directionsService = new window.google.maps.DirectionsService();
               let origin = new window.google.maps.LatLng(42.6629143, -73.7734688);
               let destination = new window.google.maps.LatLng(filteredLocations[filteredLocations.length - 1].latitude, filteredLocations[filteredLocations.length - 1].longitude);
-              let waypoints = [...filteredLocations];
+               // let waypoints = [...filteredLocations];
+               let waypoints = [...filteredLocations.slice(0, filteredLocations.length - 1)];
               directionsService.route(
                 {
                   origin,

@@ -70,11 +70,36 @@ const Order = () => {
 }
 
     const options = allCustomers ? allCustomers.map((item) => ({ value: item.username, label: item.customername })) : null;
+    const getAllItems = () => {
+      setIsLoading(true);
+      getPagesCount();
+      setMenuData([]);
+      axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
+          pageNum: activePage,
+          searchItem: searchItem,
+          searchCategory: searchCategory,
+          isActive: "1"
+      })
+          .then(results => {
+              setMenuData(results.data);
+              setError(false);
+              setIsLoading(false);
+              setCartSuccess(true);
+          }
+          )
+          .catch(e => {
+              setError(true);
+              setIsLoading(false);
+              setCartSuccess(true);
+              // setSearchItem("");
+          })
+
+  }
     useEffect(
          () => {
             getPagesCount();
              getAllCustomers();
-             retreiveItems();
+             getAllItems();
         }, [activePage]);
 
         const getPagesCount = async () => {

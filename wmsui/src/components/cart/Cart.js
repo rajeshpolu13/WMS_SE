@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {Container, Row, Col, Alert, Form} from 'react-bootstrap';
@@ -23,7 +22,8 @@ const Cart = () => {
             let resp = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
                 pageNum: -1,
                 searchItem: "",
-                searchCategory: ""
+                searchCategory: "",
+                isActive: ""
             });
             setMenuData(resp.data);
             setError(false);
@@ -181,6 +181,24 @@ const Cart = () => {
         }
     }
     return (<>
+    {orderSuccess === true ? 
+            <Container className='text-center mt-3'>
+                <Row>
+                    <Col>
+                        <Alert variant='success'>
+                            <h3>  Your Order is placed</h3>
+                        </Alert>
+                    </Col>
+                </Row>
+            </Container> :  orderSuccess === false ? <Container className='text-center mt-3'>
+                <Row>
+                    <Col>
+                        <Alert variant='danger'>
+                            <h4>  Transaction failed. Please try again</h4>
+                        </Alert>
+                    </Col>
+                </Row>
+            </Container> : null}
         <div className="card mt-5">
             <div className="container mt-3 mb-3">
             <Row className="menu-center-text mt-3">
@@ -281,29 +299,12 @@ const Cart = () => {
                     </div>
                 </div>
             </div> : null}
-            {orderSuccess === true ? <Container className='text-center mt-3'>
-                <Row>
-                    <Col>
-                        <Alert variant='success'>
-                            <h3>  Your Order is placed</h3>
-                        </Alert>
-                    </Col>
-                </Row>
-            </Container> :  orderSuccess === false ? <Container className='text-center mt-3'>
-                <Row>
-                    <Col>
-                        <Alert variant='danger'>
-                            <h4>  Transaction failed. Please try again</h4>
-                        </Alert>
-                    </Col>
-                </Row>
-            </Container> : null}
             {/* {error === true ? (
           <Container>
             <Row>
               <Col>
                 <Alert variant="danger">
-                  <Alert.Heading>DATA ERROR</Alert.Heading>
+                  <Alert.Heading>NO DATA FOUND</Alert.Heading>
                   <p>There is no data avaiable for your request.</p>
                 </Alert>
               </Col>

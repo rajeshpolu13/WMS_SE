@@ -53,18 +53,18 @@ const MakeRoute = () => {
             let newData = dataArray.map(item => (item === "") ? null : item).filter(Boolean);
             let mapCustomers = (Array.from(new Set(newData)));
             let floc = allCustomers
-              .filter((customer) => mapCustomers.includes(customer.id))
-              .map((customer) => ({
+            .filter(customer => mapCustomers.includes(customer.id))
+            .map(customer => ({
                 latitude: Number(customer.latitude),
                 longitude: Number(customer.longitude),
-              }))
-              .sort((a, b) => {
+            }))
+            .sort((a, b) => {
                 // Sort first by latitude, then by longitude
-                if (a.latitude !== b.latitude) {
-                  return a.latitude - b.latitude;
+                if (a.longitude !== b.longitude) {
+                    return a.longitude - b.longitude;
                 }
-                return a.longitude - b.longitude;
-              });
+                return a.latitude - b.latitude;
+            });
             setFilteredLocations(floc);
       }
       const mapOptions = {
@@ -187,7 +187,8 @@ const MakeRoute = () => {
                     let directionsService = new window.google.maps.DirectionsService();
                     let origin = new window.google.maps.LatLng(42.6629143, -73.7734688);
                     let destination = new window.google.maps.LatLng(filteredLocations[filteredLocations.length - 1].latitude, filteredLocations[filteredLocations.length - 1].longitude);
-                    let waypoints = [...filteredLocations];
+                    // let waypoints = [...filteredLocations];
+                    let waypoints = [...filteredLocations.slice(0, filteredLocations.length - 1)];
                     directionsService.route(
                       {
                         origin,
