@@ -18,6 +18,7 @@ const ViewOrder = () => {
     const [allCustomers, setAllCustomers] = useState(null); // All customers under logged in salesperson
     const [showCartModel, setShowCartModel] = useState(false);
     let userName = useSelector((state) => state.loginReducer.userInfo.username);
+    let userRole = useSelector((state) => state.loginReducer.userInfo.role);
     const componentPDF = useRef();
     const generatePDF = useReactToPrint({
         content: ()=>componentPDF.current,
@@ -48,7 +49,8 @@ const ViewOrder = () => {
           let resp = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/getItemsByName`, {
               pageNum: -1,
               searchItem: "",
-              searchCategory: ""
+              searchCategory: "",
+              isActive:""
           });
           setProducts(resp.data);
       }
@@ -199,10 +201,11 @@ const ViewOrder = () => {
                 <Table>
                   <thead>
                     <tr>
+                      <th>Status</th>
                     <th>Customer</th>
                       <th>Ordered Date</th>
                       <th>Order Total</th>
-                      <th>ACTION</th>
+                      {userRole=="packer"?<th>ACTION</th>:null}
                       <th></th>
                     </tr>
                   </thead>
@@ -211,11 +214,12 @@ const ViewOrder = () => {
                       menuData.map((data, index) => {
                         return (
                           <tr key={index}>
+                            <td><b>{data.transactionStatus}</b></td>
                             <td>{(allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).customername: '')}</td>
                             <td>{new Date((data.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', }) }</td>
                             <td><b>$&nbsp;{Number(data.transactionTotal).toFixed(2).toString()}</b></td>
-                            <td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
-                            ><FaEye size={30} color="blue" /> </Button></td>
+                            {userRole=="packer"?<td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
+                            ><FaEye size={30} color="blue" /> </Button></td>:null}
                           </tr>
                         );
                       })}
@@ -238,7 +242,7 @@ const ViewOrder = () => {
             <Row>
               <Col>
                 <Alert variant="danger">
-                  <Alert.Heading>DATA ERROR</Alert.Heading>
+                  <Alert.Heading>NO DATA FOUND</Alert.Heading>
                   <p>There is no transaction data available for your request.</p>
                 </Alert>
               </Col>

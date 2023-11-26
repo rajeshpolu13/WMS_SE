@@ -11,7 +11,10 @@ const Profile=()=>{
   let userid = useSelector((state) => state.loginReducer.userInfo.userId);
   // console.log(userid);
   useEffect(() => {
-    
+    if(userid==null || userid==""){
+      if(localStorage.getItem('user')){
+        userid=JSON.parse(localStorage.getItem("user")).userId;
+      }}
     axios.post(`${process.env.REACT_APP_API_URL}/profile/finduser`, {userid}).then(
       res=>{
         // console.log(res.data);  
