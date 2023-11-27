@@ -382,7 +382,12 @@ const OrdersToDeliver = () => {
                       menuData.map((data, index) => {
                         return (
                           <tr key={index}>
-                            <td>{(allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).customername: '')}</td>
+                            <td>{(allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).customername: '')}<br />{
+                              (allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).address: '')+","+
+                              (allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).city: '')+","+
+                              (allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).state: '')+","+
+                              (allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).zip: '')
+                            }</td>
                             <td>{new Date((data.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', }) }</td>
                             <td>{allCustomers?(allCustomers.find((item) => item.id === data.userId) || {}).salesperson: ""}</td>
                             <td>{(data.transactionItems).length}</td>

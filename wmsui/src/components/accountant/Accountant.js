@@ -253,6 +253,7 @@ const Accountant = () => {
                                         setSettleAmount(e.target.value);
                                         setConfirmPack(false);
                                     }}
+                                    disabled={Number(selectedTransaction.receivedAmount)==0}
                                     required
                                     />
                                     <Form.Control.Feedback type="invalid">
