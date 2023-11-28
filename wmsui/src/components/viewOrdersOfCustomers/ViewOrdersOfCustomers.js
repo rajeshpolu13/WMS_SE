@@ -179,10 +179,12 @@ const ViewOrdersOfCustomers = ({ selectedUserId }) => {
                 <Table>
                   <thead>
                     <tr>
-                    <th>Customer</th>
+                      <th>Customer</th>
                       <th>Ordered Date</th>
                       <th>Salesperson</th>
                       <th># of Items</th>
+                      <th>Order Total</th>
+                      <th>Paid Amount</th>
                       <th>PRINT</th>
                       <th></th>
                     </tr>
@@ -196,6 +198,8 @@ const ViewOrdersOfCustomers = ({ selectedUserId }) => {
                             <td>{new Date((data.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', }) }</td>
                             <td>{allCustomers?(allCustomers.find((item) => item.id === data.userId) || {}).salesperson: ""}</td>
                             <td>{(data.transactionItems).length}</td>
+                            <td><b>$&nbsp;{Number(data.transactionTotal).toFixed(2).toString()}</b></td>
+                            <td><b>$&nbsp;{Number(data.receivedAmount).toFixed(2).toString()}</b></td>
                             <td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
                             ><FaPrint size={20} color="blue" /> </Button></td>
                           </tr>

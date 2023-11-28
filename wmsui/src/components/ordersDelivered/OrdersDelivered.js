@@ -11,6 +11,7 @@ const OrdersDelivered = () => {
     
     const [error, setError] = useState(false);
     const [menuError, setMenuError] = useState(false);
+    const [drivers, setDrivers] = useState(null);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [menuData, setMenuData] = useState(null);
     const [products, setProducts] = useState([]);
@@ -80,18 +81,27 @@ const OrdersDelivered = () => {
     
             }
       }
-
+      const getAllDrivers = async () => {
+        try {
+            let resp = await axios.get(`${process.env.REACT_APP_API_URL}/customers/getAllDrivers`);
+            setDrivers(resp.data);
+            
+        }
+        catch (err) {
+            console.log("Error in getting drivers"+err);
+        }
+    }
     const handleModel = async (items) =>{
         setSelectedTransaction(items);
         setShowCartModel(true);
-        getOrderItems()
+        getOrderItems();
     }
     useEffect(
          () => {
              getAllCustomers();
              getOrderItems();
              getAllProducts();
-             
+             getAllDrivers();
         }, []);
     
         return (
@@ -113,9 +123,10 @@ const OrdersDelivered = () => {
                            <p><b>Customer:</b>&nbsp;&nbsp;{(allCustomers? (allCustomers.find((item) => item.id === selectedTransaction.userId) || {}).customername: '')}</p>
                            <p><b>STATUS:</b>&nbsp;&nbsp;{(selectedTransaction.transactionStatus==="ordered"?'NEW':selectedTransaction.transactionStatus)}</p>
                            <p><b># of Items:</b>&nbsp;{(selectedTransaction.transactionItems).length}</p>
-                           <p>Paid Amount:<b> $&nbsp;{Number(selectedTransaction.receivedAmount).toFixed(2).toString()}</b></p>
+                           <p><b>Paid Amount: $&nbsp;{Number(selectedTransaction.receivedAmount).toFixed(2).toString()}</b></p>
+                           <p><b>Driver:</b>&nbsp;{drivers?(drivers.find((item) => item.id == selectedTransaction.driver) || {}).username: ""}</p>
                            <hr></hr>
-                           <p>Comments: {selectedTransaction.comments}</p>
+                           <p><b>Comments: </b>{selectedTransaction.comments}</p>
                            <hr></hr>
                            
                            <h4>ORDERED PRODUCTS</h4>
@@ -190,7 +201,9 @@ const OrdersDelivered = () => {
                     <th>Customer</th>
                       <th>Ordered Date</th>
                       <th>Salesperson</th>
+                      <th>Driver</th>
                       <th># of Items</th>
+                      <th>Paid Amount</th>
                       <th>PRINT</th>
                       <th></th>
                     </tr>
@@ -203,7 +216,9 @@ const OrdersDelivered = () => {
                             <td>{(allCustomers? (allCustomers.find((item) => item.id === data.userId) || {}).customername: '')}</td>
                             <td>{new Date((data.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', }) }</td>
                             <td>{allCustomers?(allCustomers.find((item) => item.id === data.userId) || {}).salesperson: ""}</td>
+                            <td>{drivers?(drivers.find((item) => item.id == data.driver) || {}).username: ""}</td>
                             <td>{(data.transactionItems).length}</td>
+                            <td><b>$&nbsp;{Number(data.receivedAmount).toFixed(2).toString()}</b></td>
                             <td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
                             ><FaPrint size={20} color="blue" /> </Button></td>
                         

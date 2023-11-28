@@ -13,6 +13,7 @@ const ViewPackedOrders = () => {
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [menuData, setMenuData] = useState(null);
     const [products, setProducts] = useState([]);
+    const [drivers, setDrivers] = useState(null); 
     const [allCustomers, setAllCustomers] = useState(null); // All customers under logged in salesperson
     const [showCartModel, setShowCartModel] = useState(false);
     let userId = useSelector((state) => state.loginReducer.userInfo.userId);
@@ -80,6 +81,16 @@ const ViewPackedOrders = () => {
     
             }
       }
+      const getAllDrivers = async () => {
+        try {
+            let resp = await axios.get(`${process.env.REACT_APP_API_URL}/customers/getAllDrivers`);
+            setDrivers(resp.data);
+            
+        }
+        catch (err) {
+            console.log("Error in getting drivers"+err);
+        }
+    }
 
     const handleModel = async (items) =>{
         setSelectedTransaction(items);
@@ -91,7 +102,7 @@ const ViewPackedOrders = () => {
              getAllCustomers();
              getOrderItems();
              getAllProducts();
-             
+             getAllDrivers();
         }, []);
     
         return (
@@ -113,6 +124,9 @@ const ViewPackedOrders = () => {
                            <p><b>Customer:</b>&nbsp;&nbsp;{(allCustomers? (allCustomers.find((item) => item.id === selectedTransaction.userId) || {}).customername: '')}</p>
                            <p><b>STATUS:</b>&nbsp;&nbsp;{(selectedTransaction.transactionStatus==="ordered"?'NEW':selectedTransaction.transactionStatus)}</p>
                            <p><b># of Items:</b>&nbsp;{(selectedTransaction.transactionItems).length}</p>
+                           {role=="customer" && (selectedTransaction.transactionStatus=="out for delivery" || selectedTransaction.transactionStatus=="delivered" || selectedTransaction.transactionStatus=="settled")?
+                           <p><b>Driver:</b>&nbsp;{drivers?(drivers.find((item) => item.id == selectedTransaction.driver) || {}).username: ""}</p>
+                           :null}
                            <h4>ORDERED PRODUCTS</h4>
                            {selectedTransaction.transactionItems && (selectedTransaction.transactionItems).length > 0 ? (
                             <Container>
@@ -181,10 +195,12 @@ const ViewPackedOrders = () => {
                   <thead>
                     <tr>
                       <th>Status</th>
-                    <th>Customer</th>
+                      <th>Customer</th>
                       <th>Ordered Date</th>
                       <th>Salesperson</th>
                       <th># of Items</th>
+                      {role=="customer"?<><th>Order Total</th>
+                      <th>Paid Amount</th></>:null}
                       <th>PRINT</th>
                       <th></th>
                     </tr>
@@ -199,6 +215,10 @@ const ViewPackedOrders = () => {
                             <td>{new Date((data.transactionDate).toString()).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', }) }</td>
                             <td>{allCustomers?(allCustomers.find((item) => item.id === data.userId) || {}).salesperson: ""}</td>
                             <td>{(data.transactionItems).length}</td>
+                            {role=="customer"?<><td><b>$&nbsp;{Number(data.transactionTotal).toFixed(2).toString()}</b></td>
+                            
+                            {(data.transactionStatus=="delivered" || data.transactionStatus=="settled")?<td><b>$&nbsp;{Number(data.receivedAmount).toFixed(2).toString()}</b></td>:<td></td>}
+                            </>:null}
                             {(role=="customer" && data.transactionStatus=="ordered")?null:<td><Button size='lg' variant='light' onClick={(e) => { handleModel(data);  }}
                             ><FaPrint size={20} color="blue" /> </Button></td>}
                           </tr>
